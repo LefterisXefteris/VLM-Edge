@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <numeric>
-#include <cstdlib> // For aligned_alloc
+#include <cstdlib> 
 
 class Tensor {
 public:
@@ -14,9 +14,7 @@ public:
         // 1. Calculate total number of elements
         size = std::accumulate(dims.begin(), dims.end(), 1, std::multiplies<int64_t>());
 
-        // 2. THE CHALLENGE: Aligned Allocation
-        // 64-byte alignment ensures this data fits perfectly into CPU Cache Lines.
-        // The size must be a multiple of the alignment.
+
         size_t bytes = size * sizeof(float);
         size_t aligned_size = ((bytes + 63) / 64) * 64; 
         
@@ -24,8 +22,7 @@ public:
 
         if (!data) throw std::runtime_error("Failed to allocate aligned memory.");
 
-        // 3. Calculate Strides (Row-Major)
-        // For a shape {N, C, H, W}, the W-stride is 1, H-stride is W, etc.
+
         strides.resize(shape.size());
         int64_t current_stride = 1;
         for (int i = shape.size() - 1; i >= 0; --i) {
